@@ -556,9 +556,7 @@ Caso seja possível, o projeto poderá evoluir com:
 
 # 📖 Documentação técnica
 
-A documentação completa está disponível em:
-
-**`notes/proxmox-monitor-sentinela.md`**
+📖 [Documentação técnica completa](https://github.com/glaubergf/proxmox-nobreak-monitor/blob/main/notes/proxmox-monitor-sentinela.md)
 
 Ela contém:
 
@@ -573,69 +571,3 @@ Ela contém:
 - troubleshooting;
 - manutenção;
 - critérios para futuras melhorias.
-
-[📖 Documentação técnica completa](https://github.com/glaubergf/proxmox-nobreak-monitor/blob/main/notes/proxmox-monitor-sentinela.md)
-
----
-
-# ✅ Estado do projeto
-
-| Componente | Status |
-|---|---|
-| Intelbras XNB 600 | ✅ |
-| Bateria Moura 12 V / 9 Ah | ✅ |
-| Proxmox | ✅ |
-| TP-Link EX511 | ✅ |
-| Nokia G-1425G-B | ✅ |
-| D-Link DIR-524 como sentinela | ✅ |
-| Monitoramento ICMP | ✅ |
-| Confirmação de 30s | ✅ |
-| Espera de 600s | ✅ |
-| Verificação final | ✅ |
-| Cancelamento automático | ✅ |
-| Shutdown real | ✅ |
-| `pve-guests` validado | ✅ |
-| 7 VMs/CTs encerrados | ✅ |
-| Teste de autonomia | ✅ |
-
----
-
-## 📌 Referência rápida
-
-```text
-Nobreak:       Intelbras XNB 600 120 V
-Bateria:       Moura 12 V / 9 Ah
-
-Sentinela:     D-Link DIR-524
-IP:            192.168.0.2
-Alimentação:   Fora do nobreak
-
-Roteador:      TP-Link EX511
-IP:            192.168.0.1
-Alimentação:   Nobreak
-
-ONT:           Nokia G-1425G-B
-Alimentação:   Nobreak
-
-Host:          Beelink Ryzen 7 5800H
-RAM:           24 GB
-Storage:       500 GB
-Guests:        7
-
-Verificação:   5s
-Confirmação:   30s
-Espera:        600s
-Shutdown:      habilitado
-```
-
----
-
-## 📚 Fontes técnicas
-
-- **Intelbras XNB 600 120 V** — documentação oficial do produto.
-- **TP-Link EX511** — especificações oficiais do fabricante.
-- **Nokia G-1425G-B** — documentação técnica do equipamento.
-
----
-
-> **Nota:** este README apresenta o projeto e sua operação. Os detalhes técnicos e as decisões de projeto permanecem documentados em `notes/proxmox-monitor-sentinela.md`.
