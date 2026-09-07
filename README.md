@@ -146,7 +146,7 @@ O XNB 600 não possui, neste projeto, uma interface de gerenciamento utilizada p
 
 | Item | Especificação |
 |---|---|
-| Hardware | MiniPC Beelink |
+| Hardware | mini PC Beelink SER5 |
 | CPU | AMD Ryzen 7 5800H |
 | CPU | 8 cores / 16 threads |
 | RAM | 24 GB DDR4 |
@@ -571,3 +571,32 @@ Ela contém:
 - troubleshooting;
 - manutenção;
 - critérios para futuras melhorias.
+
+---
+
+## 📜 Licença
+
+Este projeto está licenciado sob os termos da **GNU General Public License v3.0 (GPLv3)**.
+
+[GNU GPLv3](https://www.gnu.org/licenses/gpl-3.0.html)
+
+### 🏛️ Aviso Legal
+
+```text
+Copyright (c) 2026 Glauber GF (mcnd2)
+
+Este programa é software livre: você pode redistribuí-lo e/ou modificá-lo
+sob os termos da Licença Pública Geral GNU conforme publicada pela
+Free Software Foundation, na versão 3 da Licença.
+
+Este programa é distribuído na esperança de que seja útil,
+mas SEM NENHUMA GARANTIA; sem mesmo a garantia implícita de
+COMERCIALIZAÇÃO ou ADEQUAÇÃO A UM DETERMINADO FIM.
+
+Veja a GNU General Public License para mais detalhes.
+
+Você deve ter recebido uma cópia da Licença Pública Geral GNU
+junto com este programa. Caso contrário, consulte:
+
+https://www.gnu.org/licenses/
+```
