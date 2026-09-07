@@ -1,2 +1,7 @@
+# CONFIG .gitignore
+
+# Diretórios locais
+
+# Arquivos locais
 notes/arquitetura-fluxo.txt
 notes/nobreak-monitor-comentado.sh
