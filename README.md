@@ -147,8 +147,7 @@ O XNB 600 não possui, neste projeto, uma interface de gerenciamento utilizada p
 | Item | Especificação |
 |---|---|
 | Hardware | mini PC Beelink SER5 |
-| CPU | AMD Ryzen 7 5800H |
-| CPU | 8 cores / 16 threads |
+| CPU | AMD Ryzen 7 5800H / 8 cores / 16 threads |
 | RAM | 24 GB DDR4 |
 | Storage | SSD M.2 500 GB |
 | Guests | 7 VMs/CTs |
