@@ -224,8 +224,6 @@ SHUTDOWN_ENABLED=true
 ├── images
 │   └── sentinela.png
 ├── notes
-│   ├── arquitetura-fluxo.txt
-│   ├── nobreak-monitor-comentado.sh
 │   └── proxmox-monitor-sentinela.md
 └── README.md
 ```
