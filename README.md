@@ -1,5 +1,7 @@
 # 📡 Proxmox Monitor Sentinela
 
+![Image](https://github.com/glaubergf/proxmox-nobreak-monitor/blob/main/images/sentinela.png)
+
 Monitoramento de falta de energia para um host Proxmox protegido por um **Intelbras XNB 600 120 V**, utilizando um equipamento externo ao nobreak como sentinela através da rede.
 
 O projeto detecta indiretamente uma interrupção da rede elétrica, confirma a condição durante um período determinado e, caso a falta de energia persista, solicita o **shutdown ordenado do host Proxmox**.
