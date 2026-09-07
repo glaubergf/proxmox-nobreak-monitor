@@ -1,0 +1,20 @@
+[Unit]
+Description=Monitor Sentinela de Energia do Nobreak - Proxmox
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+
+ExecStart=/usr/local/sbin/nobreak-monitor.sh
+
+# O processo não deve ser reiniciado automaticamente.
+# Após um shutdown real, o host será desligado.
+Restart=no
+
+# O monitor precisa executar como root para a futura etapa
+# de shutdown do Proxmox.
+User=root
+
+[Install]
+WantedBy=multi-user.target

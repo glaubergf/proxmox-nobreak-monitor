@@ -1,0 +1,290 @@
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                         ARQUITETURA DE ENERGIA + REDE                                ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+
+                         ⚡ REDE ELÉTRICA / CONCESSIONÁRIA
+                                      │
+                 ┌────────────────────┼────────────────────┐
+                 │                    │                    │
+                 │                    │                    │
+                 ▼                    ▼                    ▼
+        ┌────────────────┐   ┌────────────────┐   ┌──────────────────┐
+        │   SENTINELA    │   │ OUTROS EQUIP.  │   │     NOBREAK      │
+        │                │   │                │   │                  │
+        │ ⚡ Direto       │   │ ⚡ Direto       │   │ ⚡ Entrada da     │
+        │    da rede     │   │    da rede     │   │    rede elétrica │
+        │                │   │                │   │                  │
+        │ 192.168.0.2    │   │ PCs / Switches │   │   🔋 Bateria     │
+        └───────┬────────┘   └───────┬────────┘   └────────┬─────────┘
+                │                    |                     │
+                │                    |                     │
+                │                    |              ⚡ SAÍDA PROTEGIDA
+                │                    |                     │
+                │            🌐 REDE DE DADOS      ┌───────┴─────────────────┐
+                │                    |             │                         │
+                │                    |             ▼                         ▼
+                │                    |   ┌────────────────┐         ┌─────────────────┐
+                │                    |   │ ROTEADOR       │         │ NODE PROXMOX    │
+                │                    |   │      PRINCIPAL │         │                 │
+                │                    └───|                │         │ ⚡ Via Nobreak   │
+                │                        │ ⚡ Via Nobreak  │         │                 │
+                │                        │ 192.168.0.1    │         │ 192.168.0.X     │
+                │                        └───┬───────┬────┘         └────────┬────────┘
+                │                            │       |                       │
+                │                            │       |                       │
+                │     🌐 REDE DE DADOS       │       │   🌐 REDE DE DADOS    │
+                └────────────────────────────┘       └───────────────────────┘
+
+
+
+
+                                 🌐 REDE DE DADOS
+                                  192.168.0.0/24
+                                         │
+                                         ▼
+                            ┌─────────────────────────┐
+                            │    ROTEADOR PRINCIPAL   │
+                            │                         │
+                            │      192.168.0.1        │
+                            │                         │
+                            │     SWITCH / LAN        │
+                            └────────────┬────────────┘
+                                         │
+                   ┌─────────────────────┼─────────────────────┐
+                   │                     │                     │
+                   │                     │                     │
+                   ▼                     ▼                     ▼
+          ┌────────────────┐   ┌──────────────────┐   ┌──────────────────┐
+          │   SENTINELA    │   │   NODE PROXMOX   │   │ OUTROS EQUIP.    │
+          │                │   │                  │   │                  │
+          │ 192.168.0.2    │   │ 192.168.0.X      │   │ PCs / servidores │
+          │                │   │                  │   │ / dispositivos   │
+          │ 🌐 REDE        │   │ 🌐 REDE          │   │ 🌐 REDE          │
+          └────────────────┘   └──────────────────┘   └──────────────────┘
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                           PRINCÍPIO DA ARQUITETURA                                   ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+ * ⚡ SENTINELA
+   * └── Alimentação: DIRETO DA REDE ELÉTRICA
+   * └── Rede: ligada ao ROTEADOR PRINCIPAL
+   * └── IP: 192.168.0.2
+
+ * ⚡ OUTROS EQUIPAMENTOS
+   * └── Alimentação: DIRETO DA REDE ELÉTRICA
+   * └── Rede: ligada ao ROTEADOR PRINCIPAL
+
+ * ⚡ NOBREAK
+   * └── Entrada: REDE ELÉTRICA
+   * └── Saída protegida:
+      * ├── ROTEADOR PRINCIPAL
+      * └── NODE PROXMOX
+
+ * 🌐 REDE
+   *  └── ROTEADOR PRINCIPAL: 192.168.0.1
+        * ├── Sentinela: 192.168.0.2
+        * ├── Proxmox: 192.168.0.X
+        * └── Outros equipamentos
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                       FLUXO QUANDO DE FALTA DE ENERGIA                               ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+
+                    ┌──────────────────────────┐
+                    │   NODE PROXMOX           │
+                    │                          │
+                    │ nobreak-monitor.sh       │
+                    │ systemd service          │
+                    │ monitoramento a cada 5s  │
+                    └────────────┬─────────────┘
+                                 │
+                                 ▼
+                    ┌──────────────────────────┐
+                    │ PING SENTINELA           │
+                    │ 192.168.0.2              │
+                    └────────────┬─────────────┘
+                                 │
+                       ┌─────────┴─────────┐
+                       │                   │
+                    RESPONDE            NÃO RESPONDE
+                       │                   │
+                       ▼                   ▼
+                ┌─────────────┐    ┌──────────────────────┐
+                │ Tudo normal │    │ VERIFICA ROTEADOR    │
+                │             │    │ 192.168.0.1          │
+                │ Continua    │    └──────────┬───────────┘
+                │ monitorando │               │
+                └─────────────┘      ┌────────┴────────┐
+                                     │                 │
+                                  ROTEADOR          ROTEADOR
+                                     OFF               ON
+                                      │                │
+                                      ▼                ▼
+                           ┌──────────────────┐  ┌──────────────────────┐
+                           │ Possível falha   │  │ CONDIÇÃO COMPATÍVEL  │
+                           │ de rede          │  │ COM FALTA DE ENERGIA │
+                           │                  │  │                      │
+                           │ NÃO DESLIGA      │  │ Sentinela OFF        │
+                           └──────────────────┘  │ Roteador ON          │
+                                                 └──────────┬───────────┘
+                                                            │
+                                                            ▼
+                                                 ┌──────────────────────┐
+                                                 │ CONFIRMAÇÃO          │
+                                                 │ durante 30 segundos  │
+                                                 └──────────┬───────────┘
+                                                            │
+                                          ┌─────────────────┴─────────────────┐
+                                          │                                   │
+                                  SENTINELA VOLTOU                     CONTINUA OFF
+                                          │                                   │
+                                          ▼                                   ▼
+                                ┌──────────────────┐             ┌──────────────────────┐
+                                │ FALHA CANCELADA  │             │ MODO DE ESPERA       │
+                                │                  │             │ Autonomia: 600s      │
+                                │ Volta a monitorar│             └──────────┬───────────┘
+                                └──────────────────┘                        │
+                                                                            ▼
+                                                               ┌────────────────────────┐
+                                                               │ VERIFICAÇÃO FINAL      │
+                                                               │ após 600 segundos      │
+                                                               └───────────┬────────────┘
+                                                                           │
+                                                         ┌─────────────────┴─────────────────┐
+                                                         │                                   │
+                                                  SENTINELA ON                        SENTINELA OFF
+                                                         │                                   │
+                                                         ▼                                   ▼
+                                               ┌──────────────────┐             ┌──────────────────────┐
+                                               │ SHUTDOWN         │             │ VERIFICA ROTEADOR    │
+                                               │ CANCELADO        │             │ 192.168.0.1          │
+                                               └──────────────────┘             └──────────┬───────────┘
+                                                                                          │
+                                                                            ┌─────────────┴─────────────┐
+                                                                            │                           │
+                                                                         ROTEADOR OFF               ROTEADOR ON
+                                                                            │                           │
+                                                                            ▼                           ▼
+                                                                 ┌────────────────────┐    ┌─────────────────────┐
+                                                                 │ FALHA DE REDE      │    │ FALTA DE ENERGIA    │
+                                                                 │ / COMUNICAÇÃO      │    │ CONFIRMADA          │
+                                                                 │                    │    │                     │
+                                                                 │ NÃO DESLIGA        │    │ INICIA SHUTDOWN     │
+                                                                 └────────────────────┘    │ DO PROXMOX          │
+                                                                                           └──────────┬──────────┘
+                                                                                                      │
+                                                                                                      ▼
+                                                                                           ┌──────────────────────┐
+                                                                                           │ shutdown Node        │
+                                                                                           │ Proxmox              │
+                                                                                           └──────────┬───────────┘
+                                                                                                      │
+                                                                                                      ▼
+                                                                                           ┌──────────────────────┐
+                                                                                           │ pve-guests / systemd │
+                                                                                           │ assume o shutdown    │
+                                                                                           └──────────┬───────────┘
+                                                                                                      │
+                                                                                                      ▼
+                                                                                           ┌──────────────────────┐
+                                                                                           │ qmshutdown           │
+                                                                                           │                      │
+                                                                                           │ VM 205               │
+                                                                                           │ VM 204               │
+                                                                                           │ VM 203               │
+                                                                                           │ VM 202               │
+                                                                                           │ VM 201               │
+                                                                                           │ VM 200               │
+                                                                                           └──────────┬───────────┘
+                                                                                                      │
+                                                                                                      ▼
+                                                                                           ┌──────────────────────┐
+                                                                                           │ TODAS VMs / CTs      │
+                                                                                           │ PARADAS              │
+                                                                                           └──────────┬───────────┘
+                                                                                                      │
+                                                                                                      ▼
+                                                                                           ┌──────────────────────┐
+                                                                                           │ DESLIGA NODE         │
+                                                                                           │ PROXMOX              │
+                                                                                           └──────────────────────┘
+
+
+
+╔══════════════════════════════════════════════════════════════════════════════════════╗
+║                      FLUXO RESUMIDO DE FALTA DE ENERGIA                              ║
+╚══════════════════════════════════════════════════════════════════════════════════════╝
+
+  Sentinela
+     │
+     │ FORA DO NOBREAK
+     ▼
+  Monitoramento a cada 5s
+     │
+     ▼
+  Sentinela responde?
+     │
+     ├── SIM ──► continua monitorando
+     │
+     └── NÃO
+          │
+          ▼
+     Roteador principal responde?
+     │
+     ├── NÃO ──► possível falha de rede
+     │            NÃO DESLIGA
+     │
+     └── SIM
+          │
+          ▼
+     Confirma condição por 30s
+          │
+          ├── Sentinela voltou
+          │       └──► cancela
+          │
+          └── Sentinela continua OFF
+                   │
+                   ▼
+              Aguarda 600s
+                   │
+                   ▼
+              Verificação final
+                   │
+          ┌────────┴────────┐
+          │                 │
+     Sentinela ON       Sentinela OFF
+          │                 │
+          ▼                 ▼
+       CANCELA        Roteador responde?
+                            │
+                      ┌─────┴─────┐
+                      │           │
+                     NÃO         SIM
+                      │           │
+                      ▼           ▼
+                NÃO DESLIGA   FALTA DE ENERGIA
+                              CONFIRMADA
+                                   │
+                                   ▼
+                           shutdown Proxmox
+                                   │
+                                   ▼
+                              pve-guests
+                                   │
+                                   ▼
+                            qmshutdown VMs
+                                   │
+                                   ▼
+                           VMs / CTs parados
+                                   │
+                                   ▼
+                           Desliga Node
+
+
