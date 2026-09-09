@@ -1,3 +1,14 @@
+<!--
+# ==========================================================================
+Projeto..........: proxmox-nobreak-monitor
+Versão...........: 1.0.0
+Autor............: Glauber GF (mcnd2)
+Data.............: 16-08-2026
+Atualizado.......: 06-09-2026
+Descrição........: Esse projeto implementa um monitor de falta de energia para um host Proxmox protegido por um nobreak simples, utilizando um equipamento externo como sentinela através da rede.
+# ==========================================================================
+-->
+
 # 📡 Proxmox Monitor Sentinela
 
 ![Image](https://github.com/glaubergf/proxmox-nobreak-monitor/blob/main/images/sentinela.png)
